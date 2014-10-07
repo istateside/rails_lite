@@ -1,11 +1,6 @@
 require 'webrick'
 require_relative '../lib/phase2/controller_base'
 
-# http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick.html
-# http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick/HTTPRequest.html
-# http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick/HTTPResponse.html
-# http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick/Cookie.html
-
 class MyController < Phase2::ControllerBase
   def go
     if @req.path == "/cats"
@@ -23,3 +18,5 @@ end
 
 trap('INT') { server.shutdown }
 server.start
+
+
