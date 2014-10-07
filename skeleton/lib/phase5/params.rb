@@ -9,6 +9,7 @@ module Phase5
     def initialize(req, route_params = {})
       @params = route_params
       parse_www_encoded_form(req.query_string) if !!req.query_string
+      parse_www_encoded_form(req.body) if !!req.body
     end
 
     def [](key)
@@ -30,14 +31,24 @@ module Phase5
     # { "user" => { "address" => { "street" => "main", "zip" => "89436" } } }
     def parse_www_encoded_form(www_encoded_form)
       parsed_url = URI.decode_www_form(www_encoded_form)
-      parsed_url.each do |param|
-        @params[param[0]] = param[1]
+      parsed_url.each do |key_val_pair|
+        parsed_key = parse_key(key_val_pair[0])
+        top_level_key = parsed_key.shift
+        param_hash = recursive_param(parsed_key += [key_val_pair[1]])
+
+        @params[top_level_key] = param_hash
       end
     end
 
-    # this should return an array
-    # user[address][street] should return ['user', 'address', 'street']
     def parse_key(key)
+      key.split(/\]\[|\[|\]/)
+    end
+
+    def recursive_param(arr)
+      curr_level = arr.shift
+
+      return curr_level if arr.count == 0
+      return { curr_level => recursive_param(arr)}
     end
   end
 end
